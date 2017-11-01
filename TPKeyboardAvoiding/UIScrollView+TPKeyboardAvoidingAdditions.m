@@ -411,16 +411,16 @@ static const int kStateKey;
 }
 
 - (void)TPKeyboardAvoiding_initializeView:(UIView*)view {
-    if ( [view isKindOfClass:[UITextField class]]
-            && (((UITextField*)view).returnKeyType == UIReturnKeyDefault || (((UITextField*)view).returnKeyType == UIReturnKeyNext))
-            && (![(UITextField*)view delegate] || [(UITextField*)view delegate] == (id<UITextFieldDelegate>)self) ) {
-        [(UITextField*)view setDelegate:(id<UITextFieldDelegate>)self];
-        UIView *otherView = [self TPKeyboardAvoiding_findNextInputViewAfterView:view beneathView:self];
-        
-        if ( otherView ) {
-            ((UITextField*)view).returnKeyType = UIReturnKeyNext;
-        } else {
-            ((UITextField*)view).returnKeyType = UIReturnKeyDone;
+    if ( [view isKindOfClass:[UITextField class]] ) {
+        UITextField *textField = (UITextField*)view;
+        if ( (textField.returnKeyType == UIReturnKeyDefault || textField.returnKeyType == UIReturnKeyNext)
+            && (!textField.delegate || textField.delegate == (id<UITextFieldDelegate>)self) ) {
+            textField.delegate = (id<UITextFieldDelegate>)self;
+
+            UIView *otherView = [self TPKeyboardAvoiding_findNextInputViewAfterView:view beneathView:self];
+            if ( otherView ) {
+                ((UITextField*)view).returnKeyType = UIReturnKeyNext;
+            }
         }
     }
 }
